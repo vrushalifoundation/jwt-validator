@@ -1,10 +1,5 @@
 package org.vrushali.jwtvalidator.domain;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -13,16 +8,10 @@ import java.util.Set;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.vrushali.jwtvalidator.Sample;
 import org.vrushali.jwtvalidator.constants.JwtConstants;
-import org.vrushali.jwtvalidator.constants.SecurityConstants;
 import org.vrushali.jwtvalidator.util.PemUtils;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.Builder;
 import lombok.Getter;
 
