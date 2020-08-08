@@ -11,8 +11,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.vrushali.jwtvalidator.constants.JwtConstants;
 import org.vrushali.jwtvalidator.constants.SecurityConstants;
 import org.vrushali.jwtvalidator.domain.VrToken;
+import org.vrushali.jwtvalidator.util.PemUtils;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -97,10 +99,11 @@ public final class Jwtfilter extends OncePerRequestFilter {
 	 */
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parser().setSigningKey(SecurityConstants.SECRET_KEY).parseClaimsJws(token);
+			Jwts.parser().setSigningKey(PemUtils.getPublickey(JwtConstants.PUBLIC_KEY_FILE_PATH)).parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
-			log.error("invalid token");
+			log.error("invalid token",e.getMessage());
+			e.printStackTrace();
 			throw new JwtException(e.getMessage());
 		}
 	}

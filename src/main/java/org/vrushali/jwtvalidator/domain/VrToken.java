@@ -1,5 +1,10 @@
 package org.vrushali.jwtvalidator.domain;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -8,17 +13,23 @@ import java.util.Set;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.vrushali.jwtvalidator.Sample;
 import org.vrushali.jwtvalidator.constants.JwtConstants;
 import org.vrushali.jwtvalidator.constants.SecurityConstants;
+import org.vrushali.jwtvalidator.util.PemUtils;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public final class VrToken {
-	
+
 	private String userName;
 	private String firstName;
 	private String lastName;
@@ -31,20 +42,25 @@ public final class VrToken {
 	 * @param token
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static VrToken fromToken(String token) {
 		JSONObject obj = new JSONObject(
-				Jwts.parser().setSigningKey(SecurityConstants.SECRET_KEY).parseClaimsJws(token).getBody());
+				Jwts.parser().setSigningKey(PemUtils.getPublickey(JwtConstants.PUBLIC_KEY_FILE_PATH))
+						.parseClaimsJws(token).getBody());
 
-		List<String> roles = (List<String>) Jwts.parser().setSigningKey(SecurityConstants.SECRET_KEY)
+		List<String> roles1 = null;
+
+		roles1 = (List<String>) Jwts.parser().setSigningKey(PemUtils.getPublickey(JwtConstants.PUBLIC_KEY_FILE_PATH))
 				.parseClaimsJws(token).getBody().get(JwtConstants.PROFILE_ROLES);
-		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(roles.size());
-		for (String role : roles) {
+
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		for (String role : roles1) {
 			authorities.add(new SimpleGrantedAuthority(role));
 		}
 
 		return VrToken.builder().firstName(obj.getString(JwtConstants.PROFILE_FIRST_NAME))
 				.lastName(obj.getString(JwtConstants.PROFILE_LAST_NAME))
-				.email(obj.getString(JwtConstants.PROFILE_ROLES)).roles(authorities).build();
+				.email(obj.getString(JwtConstants.PROFILE_EMAIL)).roles(authorities).build();
 	}
 
 }
