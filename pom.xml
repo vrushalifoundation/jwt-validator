@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.vrushali</groupId>
-	<artifactId>jwtvalidator</artifactId>
+	<artifactId>jwt-validator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jwtvalidator</name>
+	<name>jwt-validator</name>
 	<description>This project validates the jwt token</description>
 
 	<properties>
