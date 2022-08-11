@@ -31,18 +31,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public final class Jwtfilter extends OncePerRequestFilter {
+public final class Jwt  {
 
-	/**
-	 * @see {@link HttpServletRequest}
-	 * @see {@link HttpServletResponse}
-	 * @see {@link FilterChain}
-	 * 
-	 * 
-	 */
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+	
+
+	public void authenticate(HttpServletRequest request) {
 		log.debug("Validating Token");
 		String token = resolveToken(request);
 		try {
@@ -58,9 +51,6 @@ public final class Jwtfilter extends OncePerRequestFilter {
 			SecurityContextHolder.clearContext();
 			return;
 		}
-
-		filterChain.doFilter(request, response);
-
 	}
 
 	/**
@@ -97,7 +87,7 @@ public final class Jwtfilter extends OncePerRequestFilter {
 	 * @param token
 	 * @return
 	 */
-	public boolean validateToken(String token) {
+	private boolean validateToken(String token) {
 		try {
 			Jwts.parser().setSigningKey(PemUtils.getPublickey(JwtConstants.PUBLIC_KEY_FILE_PATH)).parseClaimsJws(token);
 			return true;
